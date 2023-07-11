@@ -1,10 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
+
 const Budget = () => {
-    const { budget } = useContext(AppContext);
+    const { budget, totalExpenses } = useContext(AppContext)
+    const [ value, setValue ] = useState(budget);
+    const handleEvent = event => {
+        setValue(event.target.value)
+    }
+
     return (
         <div className='alert alert-secondary'>
-            <span>Budget: £{budget}</span>
+            <label>Budget: £</label>
+            <input
+                type='number'
+                value={value}
+                min={totalExpenses}
+                max='20000'
+                onChange={handleEvent}
+                step='10'
+            />
         </div>
     );
 };

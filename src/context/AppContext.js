@@ -11,13 +11,13 @@ export const AppReducer = (state, action) => {
                     return previousExp + currentExp.cost
                 },0
             );
-            total_budget = total_budget + action.payload.cost;
+            total_budget += action.payload.cost;
             action.type = "DONE";
             if(total_budget <= state.budget) {
                 total_budget = 0;
                 state.expenses.map((currentExp)=> {
                     if(currentExp.name === action.payload.name) {
-                        currentExp.cost = action.payload.cost + currentExp.cost;
+                        currentExp.cost += action.payload.cost;
                     }
                     return currentExp
                 });
@@ -33,7 +33,7 @@ export const AppReducer = (state, action) => {
             case 'RED_EXPENSE':
                 const red_expenses = state.expenses.map((currentExp)=> {
                     if (currentExp.name === action.payload.name && currentExp.cost - action.payload.cost >= 0) {
-                        currentExp.cost =  currentExp.cost - action.payload.cost;
+                        currentExp.cost = action.payload.cost;
                         budget = state.budget + action.payload.cost
                     }
                     return currentExp
@@ -98,13 +98,11 @@ export const AppProvider = (props) => {
     // 4. Sets up the app state. takes a reducer, and an initial state
     const [state, dispatch] = useReducer(AppReducer, initialState);
     let remaining = 0;
-
-    if (state.expenses) {
-            const totalExpenses = state.expenses.reduce((total, item) => {
-            return (total = total + item.cost);
-        }, 0);
-        remaining = state.budget - totalExpenses;
-    }
+    const totalExpenses = state.expenses.reduce((total, item) => {
+        return (total += item.cost);
+    }, 0);
+    
+    if (state.expenses) remaining = state.budget - totalExpenses;
 
     return (
         <AppContext.Provider
@@ -112,6 +110,7 @@ export const AppProvider = (props) => {
                 expenses: state.expenses,
                 budget: state.budget,
                 remaining: remaining,
+                totalExpenses: totalExpenses,
                 dispatch,
                 currency: state.currency
             }}
