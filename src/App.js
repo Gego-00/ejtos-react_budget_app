@@ -1,6 +1,8 @@
 import React from 'react';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "@popperjs/core";
+import "bootstrap";
 
 //Code to import Budget.js
 import Budget from './components/Budget';
